@@ -1,4 +1,4 @@
-#ifndef Book_hpp
+#ifndef Movie_hpp
 #define Movie_hpp
 
 #include <string>
