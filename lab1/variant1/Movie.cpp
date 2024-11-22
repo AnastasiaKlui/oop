@@ -30,4 +30,3 @@ int Movie::getYear() const {
 int Movie::getDuration() const {
     return duration;
 }
-
