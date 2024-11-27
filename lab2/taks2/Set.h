@@ -1,100 +1,82 @@
+#ifndef SET_HPP
+#define SET_HPP
+
+#include <vector>
+#include <algorithm>
 #include <iostream>
-#include <cstring>
 
 class Set {
 private:
-    char* characters;
-    int size;
-    
+    std::vector<char> elements;
+
 public:
-    
-    Set(){
-        characters = nullptr;
-        size = 0;
+    // Конструктор за замовчуванням
+    Set() {}
+
+    // Конструктор із заданим набором елементів
+    Set(const std::vector<char>& elements) {
+        this->elements = elements;
     }
-    
-    Set(const char* input) {
-            if (input) {
-                size = strlen(input);
-                characters = new char[size + 1];
-                strcpy(characters, input);
-            } else {
-                characters = nullptr;
-                size = 0;
+
+    // Перевірка, чи міститься елемент у множині
+    bool contains(char element) const {
+        return std::find(elements.begin(), elements.end(), element) != elements.end();
+    }
+
+    // Перетин множин
+    Set intersection(const Set& other) const {
+        std::vector<char> result;
+        for (char el : elements) {
+            if (other.contains(el)) {
+                result.push_back(el);
             }
         }
-    
-    bool box(char c) const {
-           if (characters) {
-               for (int i = 0; i < size; ++i) {
-                   if (characters[i] == c) {
-                       return true;
-                   }
-               }
-           }
-           return false;
-       }
+        return Set(result);
+    }
 
-    
-   /* void tm(const Set& other) {
-        // створюємо новий буфер розмір якого дорівнює сумі розмірів 2х обєктів
-        auto newSize = size + other.size + 1;
-        char* buffer = new char[newSize];
-        
-        // заповнюємо новий буфер нулями (ініціализація)
-        std::memset(buffer, 0, newSize);
-        
-        // спочатку копіюємо буфер першого (this) обєкта в новий буфер
-        std::memcpy(buffer, characters, size);
-        
-        // потім копіюємо в "хвіст" буфер другого обєкта
-        std::memcpy(buffer + size, other.characters, other.size);
-        
-        // не забуваємо підчищати за собою: тобно видаляти буфери які створили коли вони вже  не треба
-        delete buffer;
-    }*/
-    
-    Set add(const Set& other) {
-        // створюємо новий буфер розмір якого дорівнює сумі розмірів 2х обєктів
-        auto newSize = size + other.size + 1;
-        char* buffer = new char[newSize];
-        
-        // заповнюємо новий буфер нулями (ініціализація)
-        std::memset(buffer, 0, newSize);
-        
-        // спочатку копіюємо буфер першого (this) обєкта в новий буфер
-        std::memcpy(buffer, characters, size);
-        
-        // потім копіюємо в "хвіст" буфер другого обєкта
-        std::memcpy(buffer + size, other.characters, other.size);
-        
-        Set result(buffer);
-        
-        // не забуваємо підчищати за собою: тобно видаляти буфери які створили коли вони вже  не треба
-        delete[] buffer;
-            
-        return result;
+    // Об'єднання множин
+    Set unite(const Set& other) const {
+        std::vector<char> result = elements;
+        for (char el : other.elements) {
+            if (!contains(el)) {
+                result.push_back(el);
+            }
+        }
+        return Set(result);
     }
-    
-    
-    Set f1(const Set& other){
-        
-        
-        return Set();
+
+    // Різниця множин
+    Set difference(const Set& other) const {
+        std::vector<char> result;
+        for (char el : elements) {
+            if (!other.contains(el)) {
+                result.push_back(el);
+            }
+        }
+        return Set(result);
     }
-    
-    
-    
+
+    // Виведення множини
+    void print() const {
+        std::cout << "{ ";
+        for (char el : elements) {
+            std::cout << el << " ";
+        }
+        std::cout << "}" << std::endl;
+    }
+
+    // Отримати елементи (для функцій поза класом)
+    std::vector<char> getElements() const {
+        return elements;
+    }
 };
 
+// Функція для побудови множини унікальних елементів
+Set findUniqueElements(const Set& set1, const Set& set2) {
+    Set unionSet = set1.unite(set2);
+    Set intersectionSet = set1.intersection(set2);
 
+    return unionSet.difference(intersectionSet);
+}
 
-// реалізуйти метод, який приймає інший об'єкт класу Set і повертає нову множину, що містить всі елементи з обох множин без дублювання
-
-
-
-// реалізуйти метод, що повертає нову множину, яка містить елементи, що є у першій множині, але відсутні у другій
-
-malloc();
-memcpy();
-free();
+#endif /* SET_HPP */
